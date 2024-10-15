@@ -140,8 +140,13 @@ jobs:
     steps:
       - name: Checkout
         uses: cloudbees-io/checkout@v1
+      - uses: docker://maven:3-eclipse-temurin-17
+        name: Build
+        kind: build
+        run: mvn clean package
+        shell: sh
       - uses: cloudbees-io/publish-test-results@v1
-        name: kjk
+        name: test
         kind: test
         with:
           test-type: JUnit
