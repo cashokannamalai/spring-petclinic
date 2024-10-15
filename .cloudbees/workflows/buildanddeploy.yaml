@@ -166,3 +166,26 @@ jobs:
         uses: docker://maven:3-eclipse-temurin-17
         run: |
           mvn test
+
+  Deploy:
+    needs: SmokeTest
+    environment: production
+    outputs:
+      ingress_ip: ${{ steps.getIngressIP.outputs.ingress_ip }}
+    steps:
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+
+      - uses: cashokannamalai/kubeconfig@v1
+        name: Set kubeconfig
+        with:
+          secname: ${{ secrets.kubeconfig }}
+
+      - uses: cloudbees-io/kustomize-deploy@v1
+        name: deploy
+        kind: deploy
+        with:
+          kustomization-base-dir: ${{ cloudbees.workspace }}/base
+
+     
+             
