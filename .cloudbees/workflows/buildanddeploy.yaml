@@ -139,7 +139,7 @@ jobs:
  
 
   Approval:
-    needs: PublishTest
+    needs: StaticAnalysis
     type: manual-approval
     environment: ashok
     steps:
