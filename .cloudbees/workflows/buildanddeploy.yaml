@@ -148,7 +148,7 @@ jobs:
           folder-name: /cloudbees/workspace/target/surefire-reports/*.xml
 
   Approval:
-    needs: ArtifactPublish
+    needs: PublishTest
     type: manual-approval
     environment: ashok
     steps:
