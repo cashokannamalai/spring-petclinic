@@ -181,17 +181,17 @@ jobs:
         with:
           secname: ${{ secrets.kubeconfig }}
 
-      - uses: cloudbees-io/kustomize-deploy@v1
-        name: deploy
-        kind: deploy
-        with:
-          kustomization-base-dir: ${{ cloudbees.workspace }}/base
+      - uses: docker://bitnami/kubectl:latest
+        name: Deploy image
+        shell: sh
+        run: |
+          kubectl apply -f /cloudbees/workspace/deployment-service.yaml
 
       - name: Get Ingress IP
         id: getIngressIP
         uses: docker://bitnami/kubectl:latest
         run: |
-          INGRESS_IP=$(kubectl get ingress springpetclinic-ingress -n ashok -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+          INGRESS_IP=$(kubectl get ingress configserver-ingress -n ashok -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
           echo "Ingress IP: $INGRESS_IP"
           echo "ingress_ip=${INGRESS_IP}" >> $CLOUDBEES_OUTPUTS/ingress_ip
       - name: Publish Ingress IP Evidence
