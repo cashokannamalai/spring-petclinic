@@ -156,3 +156,13 @@ jobs:
         uses: docker://maven:3-eclipse-temurin-17
         run: |
           echo "Manual approval required before proceeding to deployment."
+
+  SmokeTest:
+    needs: Approval
+    steps:
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+      - name: Smoke Test
+        uses: docker://maven:3-eclipse-temurin-17
+        run: |
+          mvn test
