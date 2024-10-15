@@ -69,7 +69,6 @@ jobs:
             ## Unit Test Results
             - **Unit Test Results:** "${{ steps.RunUnitTest.outputs.mvn_test_stdio1 }}"
             - **JIRA Issue Key:** "${{ steps.commitinfo.outputs.jira_key }}"
-
   StaticAnalysis:
     outputs:
       BLOCKER_COUNT: ${{ steps.FetchSonarQubeIssues.outputs.BLOCKER_COUNT }}
@@ -136,6 +135,14 @@ jobs:
             | ${{ steps.FetchSonarQubeIssues.outputs.MAJOR_COUNT }} |
 
             |  ${{ steps.FetchSonarQubeIssues.outputs.MINOR_COUNT }} |
-            
-            
-            
+  kjk:
+    needs: Build
+    steps:
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+      - uses: cloudbees-io/publish-test-results@v1
+        name: kjk
+        kind: test
+        with:
+          test-type: JUnit
+          folder-name: /cloudbees/workspace/target/surefire-reports/*.xml
