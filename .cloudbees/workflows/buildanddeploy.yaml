@@ -139,7 +139,7 @@ jobs:
  
 
   Approval:
-    needs: StaticAnalysis
+    needs: Build
     type: manual-approval
     environment: ashok
     steps:
