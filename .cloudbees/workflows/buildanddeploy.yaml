@@ -3,8 +3,8 @@ kind: workflow
 name: build_and_deploy
 on:
   pull_request:
-    
-
+    branches:
+      - ashok
 jobs:
   Build:
     outputs:
@@ -24,7 +24,7 @@ jobs:
         run: |
           COMMIT_ID=$(git rev-parse HEAD)
           COMMIT_MSG=$(git log -1 --pretty=%B)
-         
+
           echo "commit_id=${COMMIT_ID}" >> $CLOUDBEES_OUTPUTS/commit_id
           echo "commit_msg=${COMMIT_MSG}" >> $CLOUDBEES_OUTPUTS/commit_msg
       - uses: docker://maven:3-eclipse-temurin-17
