@@ -3,8 +3,7 @@ kind: workflow
 name: build_and_deploy
 on:
   pull_request:
-    branches:
-      - ashok
+    
 
 jobs:
   Build:
