@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: springpetclinic-service
-  namespace: ashok
+  namespace: petclinic
   labels:
     app: springpetclinic
 spec:
