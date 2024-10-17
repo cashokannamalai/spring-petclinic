@@ -95,8 +95,11 @@ jobs:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
           language: LANGUAGE_JAVA
-        run: |
-          sonar-scanner > "$CLOUDBEES_OUTPUTS/sonar_scan_results.txt"
+          threshold-critical: 0
+          threshold-very-high: 0
+          threshold-high: 0
+          threshold-medium: 0
+          threshold-low: 0
           
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
