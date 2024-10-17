@@ -65,6 +65,15 @@ jobs:
         with:
           test-type: JUnit
           folder-name: /cloudbees/workspace/target/surefire-reports/*.xml
+      - name: SonarQube analysis
+        uses: docker://sonarsource/sonar-scanner-cli:latest
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.sources=/cloudbees/workspace \
+            -Dsonar.java.binaries=/cloudbees/workspace/target/classes \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
       - name: Publish evidence
         uses: cloudbees-io/publish-evidence-item@v1
         with:
