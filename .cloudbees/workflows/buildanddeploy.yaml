@@ -100,9 +100,10 @@ jobs:
         run: |
           mvn sonar:sonar \
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.host.url=https://sonarqube.cb-demos.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.java.binaries=src/main/java
+            -Dsonar.sources=src/main/java \
+            -Dsonar.java.binaries=target/classes
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
         kind: scan
