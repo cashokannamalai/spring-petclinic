@@ -95,15 +95,15 @@ jobs:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
           language: LANGUAGE_JAVA
-      - name: SonarQube Scan
-        uses: docker://maven:3-eclipse-temurin-17
+      - name: SonarQube analysis
+        uses: docker://sonarsource/sonar-scanner-cli:latest
         run: |
-          mvn sonar:sonar \
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+          sonar-scanner \
+            -Dsonar.projectKey=visits \
+            -Dsonar.sources=/cloudbees/workspace \
+            -Dsonar.java.binaries=/cloudbees/workspace/target/classes \
             -Dsonar.host.url=https://sonarqube.cb-demos.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.sources=src/main/java \
-            -Dsonar.java.binaries=target/classes
+            -Dsonar.login=20e414018be1508e8a472229e7ec07da1a13cfa1
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
         kind: scan
