@@ -95,11 +95,13 @@ jobs:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
           language: LANGUAGE_JAVA
-          threshold-critical: 0
-          threshold-very-high: 0
-          threshold-high: 0
-          threshold-medium: 0
-          threshold-low: 0
+      - name: SonarQube Scan
+        uses: docker://maven:3-eclipse-temurin-17
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
           
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
