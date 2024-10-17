@@ -4,7 +4,7 @@ name: build_and_deploy
 on:
   push:
     branches:
-      - main
+      - ashok
 jobs:
   Build:
     outputs:
@@ -25,13 +25,7 @@ jobs:
         run: |
           COMMIT_ID=$(git rev-parse HEAD)
           COMMIT_MSG=$(git log -1 --pretty=%B)
-         
-          JIRA_KEY=$(echo "$COMMIT_MSG" | grep -oE "[A-Z]+-[0-9]+")
-          if [ -z "$JIRA_KEY" ]; then
-            echo "Error: Commit message must include a valid JIRA issue key." >&2
-            exit 1
-          fi
-
+          # Extract the JIRA issue key (assuming format like PROJECTKEY-123)
           JIRA_KEY=$(echo "$COMMIT_MSG" | grep -oE "[A-Z]+-[0-9]+")
           if [ -z "$JIRA_KEY" ]; then
             echo "Error: Commit message must include a valid JIRA issue key." >&2
@@ -101,6 +95,9 @@ jobs:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
           language: LANGUAGE_JAVA
+        run: |
+          sonar-scanner > "$CLOUDBEES_OUTPUTS/sonar_scan_results.txt"
+          
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
         kind: scan
@@ -174,4 +171,3 @@ jobs:
         kind: deploy
         with:
           kustomization-base-dir: ${{ cloudbees.workspace }}/base
-
