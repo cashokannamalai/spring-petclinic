@@ -65,6 +65,16 @@ jobs:
         with:
           test-type: JUnit
           folder-name: /cloudbees/workspace/target/surefire-reports/*.xml
+      - name: SonarQube analysis
+        uses: docker://sonarsource/sonar-scanner-cli:latest
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=visits \
+            -Dsonar.sources=/cloudbees/workspace \
+            -Dsonar.java.binaries=/cloudbees/workspace/target/classes \
+            -Dsonar.host.url=https://sonarqube.cb-demos.io \
+            -Dsonar.login=20e414018be1508e8a472229e7ec07da1a13cfa1
+            
       - name: Publish evidence
         uses: cloudbees-io/publish-evidence-item@v1
         with:
@@ -95,15 +105,7 @@ jobs:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
           language: LANGUAGE_JAVA
-      - name: SonarQube analysis
-        uses: docker://sonarsource/sonar-scanner-cli:latest
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=visits \
-            -Dsonar.sources=/cloudbees/workspace \
-            -Dsonar.java.binaries=/cloudbees/workspace/target/classes \
-            -Dsonar.host.url=https://sonarqube.cb-demos.io \
-            -Dsonar.login=20e414018be1508e8a472229e7ec07da1a13cfa1
+      
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
         kind: scan
