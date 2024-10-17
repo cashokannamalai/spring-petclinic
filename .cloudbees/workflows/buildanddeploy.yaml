@@ -2,7 +2,7 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: build_and_deploy
 on:
-  push:
+  pull_request:
     branches:
       - ashok
 jobs:
@@ -67,7 +67,7 @@ jobs:
           folder-name: /cloudbees/workspace/target/surefire-reports/*.xml
       - name: SonarQube analysis
         uses: docker://sonarsource/sonar-scanner-cli:latest
-        run: |
+        run: |+
           sonar-scanner \
             -Dsonar.projectKey=visits \
             -Dsonar.sources=/cloudbees/workspace \
@@ -105,7 +105,6 @@ jobs:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
           language: LANGUAGE_JAVA
-      
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
         kind: scan
@@ -179,4 +178,4 @@ jobs:
         kind: deploy
         with:
           kustomization-base-dir: ${{ cloudbees.workspace }}/base
-          
+
