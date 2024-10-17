@@ -102,7 +102,7 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.java.binaries=target/classes
+            -Dsonar.java.binaries=src/main/java
       - uses: cloudbees-io/snyk-sast-scan-code@v1
         name: fdf
         kind: scan
