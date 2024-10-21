@@ -1,10 +1,11 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: build_and_deploy
-on:
+on: 
   pull_request:
     branches:
       - ashok
+
 jobs:
   Build:
     outputs:
@@ -17,14 +18,19 @@ jobs:
         uses: docker://alpine/git:latest
         run: |
           git config --global --add safe.directory /cloudbees/workspace
+          git config --global user.email "c_aannamalai@cloudbees.com"
+          git config --global user.name "cashokannamalai"
       - name: Checkout
         uses: cloudbees-io/checkout@v1
+     
       - name: Get Commit Info
         uses: docker://alpine/git:latest
         id: commitinfo
         run: |
           COMMIT_ID=$(git rev-parse HEAD)
           COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit ID: $COMMIT_ID"
+          echo "Commit Message: $COMMIT_MSG"
           # Extract the JIRA issue key (assuming format like PROJECTKEY-123)
           JIRA_KEY=$(echo "$COMMIT_MSG" | grep -oE "[A-Z]+-[0-9]+")
           if [ -z "$JIRA_KEY" ]; then
@@ -67,14 +73,13 @@ jobs:
           folder-name: /cloudbees/workspace/target/surefire-reports/*.xml
       - name: SonarQube analysis
         uses: docker://sonarsource/sonar-scanner-cli:latest
-        run: |+
+        run: |
           sonar-scanner \
-            -Dsonar.projectKey=visits \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.sources=/cloudbees/workspace \
             -Dsonar.java.binaries=/cloudbees/workspace/target/classes \
-            -Dsonar.host.url=https://sonarqube.cb-demos.io \
-            -Dsonar.login=20e414018be1508e8a472229e7ec07da1a13cfa1
-            
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
       - name: Publish evidence
         uses: cloudbees-io/publish-evidence-item@v1
         with:
@@ -100,7 +105,7 @@ jobs:
           token: ${{ secrets.GITHUB_SECRET }}
           language: LANGUAGE_JAVA
       - name: Scan with SonarQube bundled
-        uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v2
+        uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v1
         with:
           sonar-exclusion: src/main/java
           cover-file-name: ./pom.xml
@@ -118,7 +123,7 @@ jobs:
         run: |
           apk add --no-cache curl jq
           curl -u ${{ secrets.username }}:${{ secrets.password }} \
-          "https://sonarqube.cb-demos.io/api/issues/search?componentKeys=visits&severities=BLOCKER,CRITICAL,MAJOR,MINOR" \
+          "https://sonarqube.cb-demos.io/api/issues/search?componentKeys=${{ secrets.SONAR_PROJECT_KEY }}&severities=BLOCKER,CRITICAL,MAJOR,MINOR" \
           -o sonar-issues.json
           BLOCKER_COUNT=$(jq '[.issues[] | select(.severity=="BLOCKER")] | length' sonar-issues.json)
           CRITICAL_COUNT=$(jq '[.issues[] | select(.severity=="CRITICAL")] | length' sonar-issues.json)
