@@ -19,13 +19,11 @@ jobs:
         uses: docker://alpine/git:latest
         run: |
           git config --global --add safe.directory /cloudbees/workspace
-      - name: Checkout
-        uses: cloudbees-io/checkout@v1
-      - name: Set GitHub User Info
-        uses: docker://alpine/git:latest
-        run: |
           git config --global user.email "c_aannamalai@cloudbees.com"
           git config --global user.name "cashokannamalai"
+      - name: Checkout
+        uses: cloudbees-io/checkout@v1
+     
       - name: Get Commit Info
         uses: docker://alpine/git:latest
         id: commitinfo
