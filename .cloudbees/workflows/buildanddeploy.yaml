@@ -190,3 +190,14 @@ jobs:
         with:
           kustomization-base-dir: ${{ cloudbees.workspace }}/base
           
+  kjk:
+    steps:
+      - uses: cloudbees-io/checkout@v1
+        name: jhvj
+        with:
+          provider: GitHub
+          repository: https://github.com/cashokannamalai/spring-petclinic.git
+          ref: main
+          token: ${{ secrets.GITHUB_SECRET }}
+          path: $CLOUDBEES_WORKSPACE
+          github-server-url: https://github.com/cashokannamalai/spring-petclinic.git
