@@ -1,11 +1,11 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: build_and_deploy
-on:
+on: 
   pull_request:
     branches:
-      - 'main'
-  workflow_dispatch:
+      - ashok
+
 jobs:
   Build:
     outputs:
@@ -22,6 +22,7 @@ jobs:
           git config --global user.name "cashokannamalai"
       - name: Checkout
         uses: cloudbees-io/checkout@v1
+     
       - name: Get Commit Info
         uses: docker://alpine/git:latest
         id: commitinfo
