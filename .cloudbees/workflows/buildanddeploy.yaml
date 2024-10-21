@@ -4,8 +4,8 @@ name: build_and_deploy
 on:
   pull_request:
     branches:
-      - main
-  workflow_dispatch:
+      - ashok
+      - ashok1
 jobs:
   Build:
     outputs:
