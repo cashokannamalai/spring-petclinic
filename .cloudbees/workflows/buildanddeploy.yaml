@@ -2,9 +2,11 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: build_and_deploy
 on:
-  push:
+  workflow_dispatch:
+  pull_request:
     branches:
       - main
+  
 jobs:
   Build:
     outputs:
@@ -12,7 +14,6 @@ jobs:
       commit_id: ${{ steps.commitinfo.outputs.commit_id }}
       commit_msg: ${{ steps.commitinfo.outputs.commit_msg }}
       jira_key: ${{ steps.commitinfo.outputs.jira_key }}
-
     steps:
       - name: Configure git
         uses: docker://alpine/git:latest
@@ -43,7 +44,6 @@ jobs:
           echo "commit_id=${COMMIT_ID}" >> $CLOUDBEES_OUTPUTS/commit_id
           echo "commit_msg=${COMMIT_MSG}" >> $CLOUDBEES_OUTPUTS/commit_msg
           echo "jira_key=${JIRA_KEY}" >> $CLOUDBEES_OUTPUTS/jira_key
-
       - uses: docker://maven:3-eclipse-temurin-17
         name: Build
         kind: build
@@ -93,7 +93,6 @@ jobs:
             ## Unit Test Results
             - **Unit Test Results:** "${{ steps.RunUnitTest.outputs.mvn_test_stdio1 }}"
             - **JIRA Issue Key:** "${{ steps.commitinfo.outputs.jira_key }}"
-
   StaticAnalysis:
     outputs:
       BLOCKER_COUNT: ${{ steps.FetchSonarQubeIssues.outputs.BLOCKER_COUNT }}
@@ -163,7 +162,6 @@ jobs:
         uses: docker://maven:3-eclipse-temurin-17
         run: |
           echo "Manual approval required before proceeding to deployment."
-
   SmokeTest:
     needs: Approval
     steps:
@@ -173,7 +171,6 @@ jobs:
         uses: docker://maven:3-eclipse-temurin-17
         run: |
           mvn test
-
   Deploy:
     needs: SmokeTest
     environment: production
@@ -189,5 +186,3 @@ jobs:
         kind: deploy
         with:
           kustomization-base-dir: ${{ cloudbees.workspace }}/base
-          
-  
